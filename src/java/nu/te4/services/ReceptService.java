@@ -20,6 +20,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.te4.beans.ReceptBean;
+import nu.te4.support.User;
 
 @Path("/")
 public class ReceptService {
@@ -31,8 +32,10 @@ public class ReceptService {
     @GET
     @Path("Rec_Ing")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRec_Ing() {
-
+    public Response getRec_Ing(@Context HttpHeaders httpHeaders) {
+        if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
         JsonArray data = receptBean.getRec_Ing();
         
         if(data == null){
@@ -42,35 +45,102 @@ public class ReceptService {
         return Response.ok(data).build();
     }
     
+    @GET
+    @Path("Rec_IngKatASC")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRec_IngKatASC(@Context HttpHeaders httpHeaders) {
+        if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
+        JsonArray data = receptBean.getRec_IngKatASC();
+        
+        if(data == null){
+            return Response.serverError().build();
+        }
+        
+        return Response.ok(data).build();
+    }
+    
+    @GET
+    @Path("Rec_IngKatDESC")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRec_IngKatDESC(@Context HttpHeaders httpHeaders) {
+        if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
+        JsonArray data = receptBean.getRec_IngKatDESC();
+        
+        if(data == null){
+            return Response.serverError().build();
+        }
+        
+        return Response.ok(data).build();
+    }
+    
+    
+    
     @POST
     @Path("Ing")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addIng(String body){
-         
-    if(!receptBean.addIng(body)){
+    public Response addIng(String body,@Context HttpHeaders httpHeaders){
+     if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
+     if(!receptBean.addIng(body)){
          return Response.status(Response.Status.BAD_REQUEST).build();
      }
      
-     return Response.ok().build(); 
+     return Response.status(Response.Status.CREATED).build();
     }
     
     @POST
     @Path("Rec")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addRec(String body){
-         
-    if(!receptBean.addRec(body)){
+    public Response addRec(String body,@Context HttpHeaders httpHeaders){
+     if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
+     if(!receptBean.addRec(body)){
          return Response.status(Response.Status.BAD_REQUEST).build();
      }
      
-     return Response.ok().build(); 
+     return Response.status(Response.Status.CREATED).build();
+    }
+    
+    @POST
+    @Path("Rec_Ing")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addRec_Ing(String body,@Context HttpHeaders httpHeaders){
+     if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
+     if(!receptBean.addRec_Ing(body)){
+         return Response.status(Response.Status.BAD_REQUEST).build();
+     }
+     
+     return Response.status(Response.Status.CREATED).build();
     }
     
     @DELETE
     @Path("ing/{id}")
-    public Response deleteIng(@PathParam("id") int id){
-      
+    public Response deleteIng(@PathParam("id") int id,@Context HttpHeaders httpHeaders){
+     if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
      if(!receptBean.deleteIng(id)){
+         return Response.status(Response.Status.BAD_REQUEST).build();
+     }
+     
+     return Response.ok().build();        
+    }
+    
+    @DELETE
+    @Path("Rec_Ing/{recept_id}")
+    public Response deleteRec_Ing(@PathParam("recept_id") int recept_id,@Context HttpHeaders httpHeaders){
+     if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
+     if(!receptBean.deleteRec_Ing(recept_id)){
          return Response.status(Response.Status.BAD_REQUEST).build();
      }
      
@@ -80,23 +150,31 @@ public class ReceptService {
     @PUT
     @Path("Ing")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateIng(String body){
-
+    public Response updateIng(String body,@Context HttpHeaders httpHeaders){
+     if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
      if(!receptBean.updateIng(body)){
          return Response.status(Response.Status.BAD_REQUEST).build();
      }
-     return Response.ok().build(); 
+     
+     return Response.status(Response.Status.CREATED).build();
     }
     
     @PUT
     @Path("Rec")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateRec(String body){
-
+    public Response updateRec(String body,@Context HttpHeaders httpHeaders){
+     if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
      if(!receptBean.updateRec(body)){
          return Response.status(Response.Status.BAD_REQUEST).build();
      }
-     return Response.ok().build(); 
+     
+     return Response.status(Response.Status.CREATED).build();
     }
+    
+    
   
 }
