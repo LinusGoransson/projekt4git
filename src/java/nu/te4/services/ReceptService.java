@@ -33,9 +33,7 @@ public class ReceptService {
     @Path("Rec_Ing")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRec_Ing(@Context HttpHeaders httpHeaders) {
-        if (!User.authoricate(httpHeaders)) {
-           return Response.status(401).build();
-        }
+
         JsonArray data = receptBean.getRec_Ing();
         
         if(data == null){
@@ -147,6 +145,19 @@ public class ReceptService {
      return Response.ok().build();        
     }
     
+    @DELETE
+    @Path("Ing_Rec/{r_id}/{i_id}")
+    public Response deleteIng_Rec(@PathParam("r_id") int r_id,@PathParam("i_id") int i_id,@Context HttpHeaders httpHeaders){
+     if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
+     if(!receptBean.deleteIng_Rec(r_id, i_id)){
+         return Response.status(Response.Status.BAD_REQUEST).build();
+     }
+     
+     return Response.ok().build();        
+    }
+    
     @PUT
     @Path("Ing")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -175,6 +186,32 @@ public class ReceptService {
      return Response.status(Response.Status.CREATED).build();
     }
     
+    @GET
+    @Path("table")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTable(){
+     JsonArray data = receptBean.getTable();
+        if(data == null){
+            return Response.serverError().build();
+        }
+        
+        return Response.ok(data).build();
+        
+    }
+    
+    @GET
+    @Path("ing")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getIng(){
+     JsonArray data = receptBean.getIng();
+        
+        if(data == null){
+            return Response.serverError().build();
+        }
+        
+        return Response.ok(data).build();
+        
+    }
     
   
 }

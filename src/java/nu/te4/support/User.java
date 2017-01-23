@@ -2,10 +2,14 @@
 package nu.te4.support;
 
 import com.mysql.jdbc.Connection;
+import java.io.StringReader;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Base64;
 import java.util.List;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.ws.rs.core.HttpHeaders;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -38,7 +42,14 @@ public class User {
         return false;
     }
 
-    public static boolean createUser(String username, String password) {
+    public static boolean createUser(String body) {
+        JsonReader jsonReader = Json.createReader(new StringReader(body));
+        JsonObject data = jsonReader.readObject();
+        jsonReader.close();
+        
+        String username = data.getString("username");
+        String password = data.getString("password");
+        
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         try {
             Connection connection = ConnectionFactory.make("127.0.0.1");

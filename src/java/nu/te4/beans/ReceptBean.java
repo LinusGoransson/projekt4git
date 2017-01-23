@@ -36,7 +36,8 @@ public class ReceptBean {
                 String instruktion = data.getString("instruktion");
                 String i_namn = data.getString("i_namn");
                 String kategori = data.getString("kategori");
-                int author = data.getInt("author");
+                String author = data.getString("author");
+                int recept_id = data.getInt("recept_id");
                 String amount = data.getString("amount");
                 
                 jsonArrayBuilder.add(Json.createObjectBuilder()
@@ -46,6 +47,7 @@ public class ReceptBean {
                         .add("kategori", kategori)
                         .add("author", author)
                         .add("i_namn", i_namn)
+                        .add("recept_id", recept_id)
                         .add("amount", amount).build());
             }
             connection.close();
@@ -72,7 +74,7 @@ public class ReceptBean {
                 String instruktion = data.getString("instruktion");
                 String i_namn = data.getString("i_namn");
                 String kategori = data.getString("kategori");
-                int author = data.getInt("author");
+                String author = data.getString("author");
                 String amount = data.getString("amount");
                 
                 jsonArrayBuilder.add(Json.createObjectBuilder()
@@ -108,7 +110,7 @@ public class ReceptBean {
                 String instruktion = data.getString("instruktion");
                 String i_namn = data.getString("i_namn");
                 String kategori = data.getString("kategori");
-                int author = data.getInt("author");
+                String author = data.getString("author");
                 String amount = data.getString("amount");
                 
                 jsonArrayBuilder.add(Json.createObjectBuilder()
@@ -155,13 +157,13 @@ public class ReceptBean {
         String instruktion = data.getString("instruktion");
         String kategori = data.getString("kategori");
         String imglink = data.getString("imglink");
-        int author = data.getInt("author");
+        String author = data.getString("author");
             try {
                 Connection connection = ConnectionFactory.make("127.0.0.1");
                  PreparedStatement stmt = connection.prepareStatement("INSERT INTO recept VALUES (NULL,?,?,?,?,?)");
                  stmt.setString(1, r_namn);
                  stmt.setString(2, instruktion);
-                 stmt.setInt(3, author);
+                 stmt.setString(3, author);
                  stmt.setString(4, kategori);
                  stmt.setString(5, imglink);
                  stmt.executeUpdate();
@@ -224,6 +226,22 @@ public class ReceptBean {
         }
     }
     
+    public boolean deleteIng_Rec(int r_id,int i_id) {
+        try {
+            Connection connection = ConnectionFactory.make("127.0.0.1");
+            PreparedStatement stmt = connection.prepareStatement("DELETE FROM recept_ingredienser WHERE r_id = ? AND i_id = ?");
+            stmt.setInt(1, r_id);
+            stmt.setInt(2, i_id);
+            System.out.println(stmt.toString());
+            stmt.executeUpdate();
+            connection.close();
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error: "+ex.getMessage());
+            return false;
+        }
+    }
+    
     public boolean updateIng(String body) {
         
          JsonReader jsonReader = Json.createReader(new StringReader(body));
@@ -259,19 +277,17 @@ public class ReceptBean {
         String r_namn = data.getString("r_namn");
         int recept_id = data.getInt("recept_id");
         String instruktion = data.getString("instruktion");
-        int author = data.getInt("author");
         String imglink = data.getString("imglink");
         String kategori = data.getString("kategori");
         
             try {
                 Connection connection = ConnectionFactory.make("127.0.0.1");
-                 PreparedStatement stmt = connection.prepareStatement("UPDATE recept SET r_namn = ?, instruktion = ?, author = ?, kategori = ?, imglink = ? WHERE recept_id = ?");
+                 PreparedStatement stmt = connection.prepareStatement("UPDATE recept SET r_namn = ?, instruktion = ?, kategori = ?, imglink = ? WHERE recept_id = ?");
                  stmt.setString(1, r_namn);
                  stmt.setString(2, instruktion);
-                 stmt.setInt(3, author);
-                 stmt.setString(4, kategori);
-                 stmt.setString(5, imglink);
-                 stmt.setInt(6, recept_id);
+                 stmt.setString(3, kategori);
+                 stmt.setString(4, imglink);
+                 stmt.setInt(5, recept_id);
                  stmt.executeUpdate();
                  connection.close();
                  return true;
@@ -282,5 +298,41 @@ public class ReceptBean {
         
     }
     
+    public JsonArray getTable(){
+             try {
+            Connection connection = ConnectionFactory.make("127.0.0.1");
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM recept");
+            System.out.println(stmt.toString());
+            ResultSet data = stmt.executeQuery();
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+            while(data.next()){
+                
+                arrayBuilder.add(Json.createObjectBuilder().add("recept_id",data.getInt("recept_id")).add("imglink",data.getString("imglink")).add("author",data.getString("author")).add("instruktion",data.getString("instruktion")).add("r_namn", data.getString("r_namn")).add("kategori", data.getString("kategori")).build());
+            }
+           connection.close();
+            return arrayBuilder.build();
+        } catch (Exception ex) {
+            System.out.println("Error: "+ex.getMessage());
+            return null;
+        }
+    }
+    
+    public JsonArray getIng(){
+             try {
+            Connection connection = ConnectionFactory.make("127.0.0.1");
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ingredienser");
+            System.out.println(stmt.toString());
+            ResultSet data = stmt.executeQuery();
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+            while(data.next()){
+                arrayBuilder.add(Json.createObjectBuilder().add("id",data.getInt("id")).add("i_namn", data.getString("i_namn")).build());
+            }
+           connection.close();
+            return arrayBuilder.build();
+        } catch (Exception ex) {
+            System.out.println("Error: "+ex.getMessage());
+            return null;
+        }
+    }
    
 }

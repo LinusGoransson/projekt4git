@@ -20,6 +20,15 @@ public class LoginService {
       return Response.ok().build();
      }
      
+     @POST
+     @Path("register")
+     public Response createUser(String body){
+         if(!User.createUser(body)){
+             return Response.status(Response.Status.BAD_REQUEST).build();
+         }
+      return Response.status(Response.Status.CREATED).build();
+     }
+     
      
     
 }
