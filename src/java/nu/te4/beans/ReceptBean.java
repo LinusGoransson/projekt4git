@@ -21,33 +21,47 @@ import nu.te4.support.ConnectionFactory;
 @Stateless
 public class ReceptBean {
     
-    public JsonArray getRec_Ing() {
+    public JsonArray getLastRec() {
         try {
 
             Connection connection = ConnectionFactory.make("127.0.0.1");
             Statement stmt = connection.createStatement();
-            String sql = "SELECT * FROM rec_ing_view;";
+            String sql = "SELECT recept_id FROM recept ORDER BY recept_id DESC LIMIT 1;";
             ResultSet data = stmt.executeQuery(sql);
             //arraybuilder
             JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
             while (data.next()) {
-                String imglink = data.getString("imglink");
-                String namn = data.getString("r_namn");
-                String instruktion = data.getString("instruktion");
-                String i_namn = data.getString("i_namn");
-                String kategori = data.getString("kategori");
-                String author = data.getString("author");
                 int recept_id = data.getInt("recept_id");
+                
+                jsonArrayBuilder.add(Json.createObjectBuilder()
+                        .add("recept_id", recept_id).build());
+            }
+            connection.close();
+            return jsonArrayBuilder.build();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+
+        }
+        return null;
+    }
+    
+    public JsonArray getRec_Ing(int id) {
+        try {
+
+            Connection connection = ConnectionFactory.make("127.0.0.1");
+            Statement stmt = connection.createStatement();
+            String sql = "SELECT * FROM rec_ing_view where r_id ="+id;
+            ResultSet data = stmt.executeQuery(sql);
+            //arraybuilder
+            JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+            while (data.next()) {
+                String i_namn = data.getString("i_namn");
+                int recept_id = data.getInt("r_id");
                 String amount = data.getString("amount");
                 
                 jsonArrayBuilder.add(Json.createObjectBuilder()
-                        .add("imglink", imglink)
-                        .add("r_namn", namn)
-                        .add("instruktion", instruktion)
-                        .add("kategori", kategori)
-                        .add("author", author)
                         .add("i_namn", i_namn)
-                        .add("recept_id", recept_id)
+                        .add("r_id", recept_id)
                         .add("amount", amount).build());
             }
             connection.close();

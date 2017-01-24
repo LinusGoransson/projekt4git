@@ -30,11 +30,11 @@ public class ReceptService {
     
     
     @GET
-    @Path("Rec_Ing")
+    @Path("Rec_Ing/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRec_Ing(@Context HttpHeaders httpHeaders) {
+    public Response getRec_Ing(@Context HttpHeaders httpHeaders, @PathParam("id")int id) {
 
-        JsonArray data = receptBean.getRec_Ing();
+        JsonArray data = receptBean.getRec_Ing(id);
         
         if(data == null){
             return Response.serverError().build();
@@ -42,15 +42,13 @@ public class ReceptService {
         
         return Response.ok(data).build();
     }
-    
+    //getLastRec
     @GET
-    @Path("Rec_IngKatASC")
+    @Path("LastRec")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRec_IngKatASC(@Context HttpHeaders httpHeaders) {
-        if (!User.authoricate(httpHeaders)) {
-           return Response.status(401).build();
-        }
-        JsonArray data = receptBean.getRec_IngKatASC();
+
+        JsonArray data = receptBean.getLastRec();
         
         if(data == null){
             return Response.serverError().build();
