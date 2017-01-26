@@ -56,22 +56,7 @@ public class ReceptService {
         
         return Response.ok(data).build();
     }
-    
-    @GET
-    @Path("Rec_IngKatDESC")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRec_IngKatDESC(@Context HttpHeaders httpHeaders) {
-        if (!User.authoricate(httpHeaders)) {
-           return Response.status(401).build();
-        }
-        JsonArray data = receptBean.getRec_IngKatDESC();
-        
-        if(data == null){
-            return Response.serverError().build();
-        }
-        
-        return Response.ok(data).build();
-    }
+   
     
     
     
