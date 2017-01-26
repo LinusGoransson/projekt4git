@@ -46,7 +46,7 @@ public class ReceptService {
     @GET
     @Path("LastRec")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRec_IngKatASC(@Context HttpHeaders httpHeaders) {
+    public Response getRec_Ing(@Context HttpHeaders httpHeaders) {
 
         JsonArray data = receptBean.getLastRec();
         
@@ -124,6 +124,18 @@ public class ReceptService {
            return Response.status(401).build();
         }
      if(!receptBean.deleteIng(id)){
+         return Response.status(Response.Status.BAD_REQUEST).build();
+     }
+     
+     return Response.ok().build();        
+    }
+    @DELETE
+    @Path("rec/{id}")
+    public Response deleteRec(@PathParam("id") int id,@Context HttpHeaders httpHeaders){
+     if (!User.authoricate(httpHeaders)) {
+           return Response.status(401).build();
+        }
+     if(!receptBean.deleteRec(id)){
          return Response.status(Response.Status.BAD_REQUEST).build();
      }
      

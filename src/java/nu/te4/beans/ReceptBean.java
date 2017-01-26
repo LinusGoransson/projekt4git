@@ -198,7 +198,7 @@ public class ReceptBean {
         String amount = data.getString("amount");
             try {
                 Connection connection = ConnectionFactory.make("127.0.0.1");
-                 PreparedStatement stmt = connection.prepareStatement("INSERT INTO recept_ingredienser VALUES (?,?,?)");
+                 PreparedStatement stmt = connection.prepareStatement("INSERT INTO recept_ingredienser VALUES (?, ?, ?);");
                  stmt.setInt(1, r_id);
                  stmt.setInt(2, i_id);
                  stmt.setString(3, amount);
@@ -208,6 +208,20 @@ public class ReceptBean {
             } catch (Exception e) {
                 return false;
             }
+    }
+    public boolean deleteRec(int id) {
+        try {
+            Connection connection = ConnectionFactory.make("127.0.0.1");
+            PreparedStatement stmt = connection.prepareStatement("DELETE FROM recept WHERE recept_id=?");
+            stmt.setInt(1, id);
+            System.out.println(stmt.toString());
+            stmt.executeUpdate();
+            connection.close();
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error: "+ex.getMessage());
+            return false;
+        }
     }
     
     public boolean deleteIng(int id) {
